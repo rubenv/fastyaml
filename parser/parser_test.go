@@ -6,7 +6,7 @@ import (
 	"github.com/stretchr/testify/assert"
 )
 
-func TestReadLine(t *testing.T) {
+func TestParse(t *testing.T) {
 	t.Parallel()
 
 	assert := assert.New(t)
@@ -23,26 +23,31 @@ SessionInfo: active
 	assert.Equal(p.line, "WeekendInfo:")
 	assert.Equal(p.offset, 13)
 	assert.Equal(p.depth, 0)
+	assert.Equal(p.ReadKey(), "WeekendInfo")
 
 	p.ReadLine()
 	assert.Equal(p.line, "  TrackName: bathurst")
 	assert.Equal(p.offset, 13+22)
 	assert.Equal(p.depth, 2)
+	assert.Equal(p.ReadKey(), "TrackName")
 
 	p.ReadLine()
 	assert.Equal(p.line, "  TrackID: 219")
 	assert.Equal(p.offset, 13+22+1+15)
 	assert.Equal(p.depth, 2)
+	assert.Equal(p.ReadKey(), "TrackID")
 
 	p.ReadLine()
 	assert.Equal(p.line, "  TrackWeather: sunny")
 	assert.Equal(p.offset, 13+22+1+15+22)
 	assert.Equal(p.depth, 2)
+	assert.Equal(p.ReadKey(), "TrackWeather")
 
 	p.ReadLine()
 	assert.Equal(p.line, "SessionInfo: active")
 	assert.Equal(p.offset, 13+22+1+15+22+20)
 	assert.Equal(p.depth, 0)
+	assert.Equal(p.ReadKey(), "SessionInfo")
 
 	p.ReadLine()
 	assert.Equal(p.line, "")

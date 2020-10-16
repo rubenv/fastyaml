@@ -45,3 +45,10 @@ func (p *ParseInfo) ReadLine() {
 		break
 	}
 }
+
+func (p *ParseInfo) ReadKey() string {
+	if p.depth < 0 {
+		return ""
+	}
+	return ReadUntil(p.line, p.depth, ':')
+}
