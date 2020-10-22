@@ -1,6 +1,13 @@
 package fixtures
 
-/*
+// ---------------------------------------
+//    Auto-generated file, do not edit!
+// ---------------------------------------
+
+import (
+	"github.com/rubenv/fastyaml/parser"
+)
+
 type parseBasic struct {
 	*parser.Parser
 }
@@ -27,41 +34,42 @@ func (p *parseBasic) parseBasic() (*Basic, error) {
 				return nil, err
 			}
 			result.WeekendInfo = o
+
 		default:
 			p.SkipLine()
 		}
-
 	}
-
 	return result, nil
 }
 
 func (p *parseBasic) parseWeekendInfo() (WeekendInfo, error) {
 	result := WeekendInfo{}
+
 	d := p.Depth
 	for d == p.Depth {
 		key := p.ReadKey()
 
 		switch key {
 		case "TrackName":
-			s, err := p.ReadString()
+
+			o, err := p.ReadString()
 			if err != nil {
 				return WeekendInfo{}, err
 			}
-			result.TrackName = s
+			result.TrackName = o
 			p.AdvanceLine()
 		case "TrackID":
-			i, err := p.ReadInt()
+
+			o, err := p.ReadInt()
 			if err != nil {
 				return WeekendInfo{}, err
 			}
-			result.TrackID = i
+			result.TrackID = o
 			p.AdvanceLine()
+
 		default:
 			p.SkipLine()
 		}
-
 	}
 	return result, nil
 }
-*/
