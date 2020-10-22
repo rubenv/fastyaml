@@ -1,35 +1,42 @@
 package parser
 
-type ParseInfo struct {
+import (
+	"strconv"
+	"strings"
+)
+
+type Parser struct {
 	in     string
-	line   string
 	offset int
 
-	depth int
-	isNew bool
+	Line  string
+	Depth int
+	IsNew bool
+
+	valueOffset int
 }
 
-func NewParseInfo(in string) *ParseInfo {
-	p := &ParseInfo{
+func New(in string) *Parser {
+	p := &Parser{
 		in: in,
 	}
-	p.ReadLine()
+	p.AdvanceLine()
 	return p
 }
 
-func (p *ParseInfo) ReadLine() {
+func (p *Parser) AdvanceLine() {
 	for {
 		if p.offset == len(p.in) {
-			p.line = ""
-			p.depth = -1
+			p.Line = ""
+			p.Depth = -1
 			return
 		}
-		p.line = ReadUntil(p.in, p.offset, '\n')
-		p.offset += len(p.line) + 1
+		p.Line = ReadUntil(p.in, p.offset, '\n')
+		p.offset += len(p.Line) + 1
 
 		allWS := true
 		depth := 0
-		for _, s := range p.line {
+		for _, s := range p.Line {
 			if s == ' ' || s == '\t' {
 				depth += 1
 			} else {
@@ -40,15 +47,39 @@ func (p *ParseInfo) ReadLine() {
 		if allWS {
 			continue
 		}
-		p.depth = depth
+		p.Depth = depth
 
 		break
 	}
 }
 
-func (p *ParseInfo) ReadKey() string {
-	if p.depth < 0 {
+// Advances a line and skips any deeper children
+func (p *Parser) SkipLine() {
+	p.AdvanceLine()
+}
+
+func (p *Parser) ReadKey() string {
+	if p.Depth < 0 {
 		return ""
 	}
-	return ReadUntil(p.line, p.depth, ':')
+	key := ReadUntil(p.Line, p.Depth, ':')
+	p.valueOffset = p.Depth + len(key) + 1
+	return key
+}
+
+func (p *Parser) ReadString() (string, error) {
+	s := strings.TrimSpace(p.Line[p.valueOffset:])
+	return s, nil
+}
+
+func (p *Parser) ReadInt() (int, error) {
+	s, err := p.ReadString()
+	if err != nil {
+		return 0, err
+	}
+	i, err := strconv.ParseInt(s, 10, 64)
+	if err != nil {
+		return 0, err
+	}
+	return int(i), nil
 }

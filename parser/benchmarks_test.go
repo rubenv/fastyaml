@@ -10,11 +10,11 @@ func BenchmarkReadLine(b *testing.B) {
   TrackWeather: sunny
 SessionInfo: active
 `
-	p := NewParseInfo(in)
+	p := New(in)
 
 	for i := 0; i < b.N; i++ {
-		for p.depth != -1 {
-			p.ReadLine()
+		for p.Depth != -1 {
+			p.AdvanceLine()
 		}
 	}
 }
@@ -27,11 +27,11 @@ func BenchmarkReadKey(b *testing.B) {
   TrackWeather: sunny
 SessionInfo: active
 `
-	p := NewParseInfo(in)
+	p := New(in)
 
 	for i := 0; i < b.N; i++ {
-		for p.depth != -1 {
-			p.ReadLine()
+		for p.Depth != -1 {
+			p.AdvanceLine()
 			p.ReadKey()
 		}
 	}
