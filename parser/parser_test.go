@@ -53,3 +53,59 @@ SessionInfo: active
 	assert.Equal(p.Line, "")
 	assert.Equal(p.Depth, -1)
 }
+
+func TestParseIndex(t *testing.T) {
+	t.Parallel()
+
+	assert := assert.New(t)
+	in := `Array:
+  - key: 1
+    val: 2
+  - key: 3
+    val: 4
+  - key: 5
+`
+
+	p := New(in)
+	assert.Equal(p.in, in)
+	assert.Equal(p.Line, "Array:")
+	assert.Equal(p.offset, 7)
+	assert.Equal(p.Depth, 0)
+	assert.Equal(p.ReadKey(), "Array")
+	assert.False(p.IsNew)
+
+	p.AdvanceLine()
+	assert.Equal(p.Line, "  - key: 1")
+	assert.Equal(p.offset, 7+11)
+	assert.Equal(p.Depth, 4)
+	assert.Equal(p.ReadKey(), "key")
+	assert.True(p.IsNew)
+
+	p.AdvanceLine()
+	assert.Equal(p.Line, "    val: 2")
+	assert.Equal(p.offset, 7+11+11)
+	assert.Equal(p.Depth, 4)
+	assert.Equal(p.ReadKey(), "val")
+	assert.False(p.IsNew)
+
+	p.AdvanceLine()
+	assert.Equal(p.Line, "  - key: 3")
+	assert.Equal(p.offset, 7+11+11+11)
+	assert.Equal(p.Depth, 4)
+	assert.Equal(p.ReadKey(), "key")
+	assert.True(p.IsNew)
+
+	p.AdvanceLine()
+	assert.Equal(p.Line, "    val: 4")
+	assert.Equal(p.offset, 7+11+11+11+11)
+	assert.Equal(p.Depth, 4)
+	assert.Equal(p.ReadKey(), "val")
+	assert.False(p.IsNew)
+
+	p.AdvanceLine()
+	assert.Equal(p.Line, "  - key: 5")
+	assert.Equal(p.offset, 7+11+11+11+11+11)
+	assert.Equal(p.Depth, 4)
+	assert.Equal(p.ReadKey(), "key")
+	assert.True(p.IsNew)
+}

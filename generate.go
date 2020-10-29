@@ -32,6 +32,7 @@ type parseField struct {
 	Name          string
 	Field         string
 	Method        string
+	Slice         bool
 	AdvanceBefore bool
 }
 
@@ -118,8 +119,18 @@ func (g *generator) outputType(t reflect.Type, p *parserData, isPointer bool) er
 			g.outputType(f.Type, p, false)
 		case reflect.String:
 			pf.Method = "p.ReadString"
+		case reflect.Slice:
+			elType := f.Type.Elem()
+			pf.Slice = true
+			pf.Method = fmt.Sprintf("p.parse%s", elType.Name())
+			pf.AdvanceBefore = true
+			g.outputType(elType, p, false)
 		case reflect.Int:
 			pf.Method = "p.ReadInt"
+		case reflect.Float32:
+			pf.Method = "p.ReadFloat32"
+		case reflect.Float64:
+			pf.Method = "p.ReadFloat64"
 		default:
 			return fmt.Errorf("Unsupported type: %v", f.Type.Kind())
 		}

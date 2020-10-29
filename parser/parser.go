@@ -32,6 +32,7 @@ func (p *Parser) AdvanceLine() {
 			return
 		}
 		p.Line = ReadUntil(p.in, p.offset, '\n')
+		p.IsNew = false
 		p.offset += len(p.Line) + 1
 
 		allWS := true
@@ -39,6 +40,9 @@ func (p *Parser) AdvanceLine() {
 		for _, s := range p.Line {
 			if s == ' ' || s == '\t' {
 				depth += 1
+			} else if s == '-' {
+				depth += 1
+				p.IsNew = true
 			} else {
 				allWS = false
 				break
@@ -82,4 +86,21 @@ func (p *Parser) ReadInt() (int, error) {
 		return 0, err
 	}
 	return int(i), nil
+}
+
+func (p *Parser) ReadFloat32() (float32, error) {
+	f, err := p.ReadFloat64()
+	return float32(f), err
+}
+
+func (p *Parser) ReadFloat64() (float64, error) {
+	s, err := p.ReadString()
+	if err != nil {
+		return 0, err
+	}
+	f, err := strconv.ParseFloat(s, 10)
+	if err != nil {
+		return 0, err
+	}
+	return f, nil
 }

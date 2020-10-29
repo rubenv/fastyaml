@@ -34,18 +34,31 @@ func (p *parse{{ $.Name }}) parse{{ .Name }}() ({{ .Type }}, error) {
 		key := p.ReadKey()
 
 		switch key {
-		{{ range .Fields -}}
+		{{- range .Fields -}}
 		case "{{ .Name }}":
-			{{ if .AdvanceBefore }}p.AdvanceLine(){{ end }}
+			{{- if .AdvanceBefore }}p.AdvanceLine(){{ end }}
+			{{- if .Slice }}
+			ad := p.Depth
+			for ad == p.Depth {
+			{{- end }}
 			o, err := {{ .Method }}()
 			if err != nil {
 				return {{ $type.ErrType }}, err
 			}
-			result.{{ .Field }} = o
+			{{- if .Slice }}
+				result.{{ .Field }} = append(result.{{ .Field }}, o)
+			{{- else }}
+				result.{{ .Field }} = o
+			{{- end }}
 			{{ if not .AdvanceBefore }}p.AdvanceLine(){{ end }}
-		{{ end }}
+			{{- if .Slice }} } {{ end }}
+		{{ end -}}
 		default:
 			p.SkipLine()
+		}
+
+		if p.IsNew {
+		    break
 		}
 	}
 	return result, nil
