@@ -14,18 +14,23 @@ import (
 )
 
 type parserData struct {
-	Package string
-	Imports []string
-	Name    string
-	Types   []*parseType
+	Package  string
+	Imports  []string
+	Name     string
+	Types    []*parseType
+	MapDepth int
 }
 
 type parseType struct {
-	Name     string
-	Type     string
-	TypeInit string
-	ErrType  string
-	Fields   []*parseField
+	Name      string
+	Type      string
+	TypeInit  string
+	ErrType   string
+	Rest      string
+	RestType  string
+	RestDepth int
+
+	Fields []*parseField
 }
 
 type parseField struct {
@@ -59,6 +64,8 @@ func (g *generator) Generate(pkg string, obj interface{}) (string, error) {
 	p.Imports = append(p.Imports, pt.PkgPath())
 
 	g.outputType(t, p, true)
+
+	//pretty.Log(p)
 
 	// Generate + format
 	var buf bytes.Buffer
@@ -102,12 +109,27 @@ func (g *generator) outputType(t reflect.Type, p *parserData, isPointer bool) er
 	for i := 0; i < t.NumField(); i++ {
 		f := t.FieldByIndex([]int{i})
 		tag := f.Tag.Get("yaml")
-		if tag == "-" {
+		tagParts := strings.Split(tag, ",")
+		if tagParts[0] == "-" {
+			continue
+		}
+		if len(tagParts) > 1 && tagParts[1] == "inline" {
+			depth, err := mapDepth(f.Type)
+			if err != nil {
+				return err
+			}
+			if depth > p.MapDepth {
+				p.MapDepth = depth
+			}
+
+			pt.Rest = f.Name
+			pt.RestType = f.Type.Name()
+			pt.RestDepth = depth
 			continue
 		}
 
 		pf := &parseField{
-			Name:  tag,
+			Name:  tagParts[0],
 			Field: f.Name,
 		}
 		pt.Fields = append(pt.Fields, pf)
@@ -136,6 +158,25 @@ func (g *generator) outputType(t reflect.Type, p *parserData, isPointer bool) er
 		}
 	}
 	return nil
+}
+
+func mapDepth(t reflect.Type) (int, error) {
+	switch t.Kind() {
+	case reflect.Map:
+		if t.Key().Kind() != reflect.String {
+			return 0, errors.New("Inline field maps should have string keys")
+		}
+		depth, err := mapDepth(t.Elem())
+		if err != nil {
+			return 0, err
+		}
+		return depth + 1, nil
+	case reflect.String:
+		return 0, nil
+	default:
+		return 0, fmt.Errorf("Unsupported type in map: %s", t.Kind().String())
+	}
+
 }
 
 func formatSource(src string) string {

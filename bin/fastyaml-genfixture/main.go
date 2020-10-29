@@ -19,5 +19,9 @@ func do() error {
 	if err != nil {
 		return err
 	}
+	err = fastyaml.GenerateFile("fixtures", fixtures.InlineMap{}, "fixtures/parse_inlinemap.go")
+	if err != nil {
+		return err
+	}
 	return nil
 }
