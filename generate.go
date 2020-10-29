@@ -147,6 +147,8 @@ func (g *generator) outputType(t reflect.Type, p *parserData, isPointer bool) er
 			pf.Method = fmt.Sprintf("p.parse%s", elType.Name())
 			pf.AdvanceBefore = true
 			g.outputType(elType, p, false)
+		case reflect.Int64:
+			pf.Method = "p.ReadInt64"
 		case reflect.Int:
 			pf.Method = "p.ReadInt"
 		case reflect.Float32:

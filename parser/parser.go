@@ -76,12 +76,16 @@ func (p *Parser) ReadString() (string, error) {
 	return s, nil
 }
 
-func (p *Parser) ReadInt() (int, error) {
+func (p *Parser) ReadInt64() (int64, error) {
 	s, err := p.ReadString()
 	if err != nil {
 		return 0, err
 	}
-	i, err := strconv.ParseInt(s, 10, 64)
+	return strconv.ParseInt(s, 10, 64)
+}
+
+func (p *Parser) ReadInt() (int, error) {
+	i, err := p.ReadInt64()
 	if err != nil {
 		return 0, err
 	}
