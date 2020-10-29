@@ -84,6 +84,9 @@ func (p *Parser) ReadKey() string {
 
 func (p *Parser) ReadString() (string, error) {
 	s := strings.TrimSpace(p.Line[p.valueOffset:])
+	if len(s) >= 2 && s[0] == '"' && s[len(s)-1] == '"' {
+		s = s[1 : len(s)-1]
+	}
 	return s, nil
 }
 

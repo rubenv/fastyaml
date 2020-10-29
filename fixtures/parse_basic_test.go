@@ -9,7 +9,7 @@ import (
 
 var inBasic = `
 WeekendInfo:
- TrackName: bathurst
+ TrackName: "bathurst"
  TrackID: 219
  Ignored:
    A: b
