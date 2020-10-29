@@ -11,6 +11,9 @@ var inBasic = `
 WeekendInfo:
  TrackName: bathurst
  TrackID: 219
+ Ignored:
+   A: b
+   C: 123
 
 SessionInfo:
  Sessions:

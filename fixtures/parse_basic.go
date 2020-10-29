@@ -44,7 +44,7 @@ func (p *parseBasic) parseBasic() (*Basic, error) {
 			result.SessionInfo = o
 
 		default:
-			p.SkipLine()
+			p.SkipValue()
 		}
 
 		if p.IsNew {
@@ -77,7 +77,7 @@ func (p *parseBasic) parseWeekendInfo() (WeekendInfo, error) {
 			result.TrackID = o
 			p.AdvanceLine()
 		default:
-			p.SkipLine()
+			p.SkipValue()
 		}
 
 		if p.IsNew {
@@ -106,7 +106,7 @@ func (p *parseBasic) parseSessionInfoDetails() (SessionInfoDetails, error) {
 				result.Sessions = append(result.Sessions, o)
 			}
 		default:
-			p.SkipLine()
+			p.SkipValue()
 		}
 
 		if p.IsNew {
@@ -142,7 +142,7 @@ func (p *parseBasic) parseSessionInfoSession() (SessionInfoSession, error) {
 				result.ResultsPositions = append(result.ResultsPositions, o)
 			}
 		default:
-			p.SkipLine()
+			p.SkipValue()
 		}
 
 		if p.IsNew {
@@ -189,7 +189,7 @@ func (p *parseBasic) parseSessionResultsPosition() (SessionResultsPosition, erro
 			result.FastestTime = o
 			p.AdvanceLine()
 		default:
-			p.SkipLine()
+			p.SkipValue()
 		}
 
 		if p.IsNew {

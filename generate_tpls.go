@@ -82,7 +82,7 @@ func (p *parse{{ $.Name }}) parse{{ .Name }}() ({{ .Type }}, error) {
 		{{ end -}}
 		default:
 		{{- if eq .Rest "" }}
-			p.SkipLine()
+			p.SkipValue()
 		{{- else }}
 			p.AdvanceLine()
 			o, err := p.consumeMap{{ add .RestDepth -1 }}()

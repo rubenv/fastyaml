@@ -58,8 +58,19 @@ func (p *Parser) AdvanceLine() {
 }
 
 // Advances a line and skips any deeper children
-func (p *Parser) SkipLine() {
-	p.AdvanceLine()
+func (p *Parser) SkipValue() {
+	rest := p.Line[p.valueOffset:]
+	if len(rest) == 0 || strings.TrimSpace(rest) == "" {
+		depth := p.Depth
+		for {
+			p.AdvanceLine()
+			if p.Depth <= depth {
+				break
+			}
+		}
+	} else {
+		p.AdvanceLine()
+	}
 }
 
 func (p *Parser) ReadKey() string {
