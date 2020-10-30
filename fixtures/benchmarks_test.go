@@ -10,7 +10,7 @@ import (
 func BenchmarkParseBasicGenerated(b *testing.B) {
 	assert := assert.New(b)
 	for i := 0; i < b.N; i++ {
-		_, err := ParseBasic(inBasic)
+		_, err := ParseBasicFromString(inBasic)
 		assert.NoError(err)
 	}
 }
@@ -27,7 +27,7 @@ func BenchmarkParseBasicYAML(b *testing.B) {
 func BenchmarkParseInlineMapGenerated(b *testing.B) {
 	assert := assert.New(b)
 	for i := 0; i < b.N; i++ {
-		_, err := ParseInlineMap(inInlineMap)
+		_, err := ParseInlineMapFromString(inInlineMap)
 		assert.NoError(err)
 	}
 }

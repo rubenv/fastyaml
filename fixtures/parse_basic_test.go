@@ -48,7 +48,7 @@ func TestParseBasic(t *testing.T) {
 
 	assert := assert.New(t)
 
-	result, err := ParseBasic(inBasic)
+	result, err := ParseBasicFromString(inBasic)
 	assert.NoError(err)
 	assert.NotNil(result)
 

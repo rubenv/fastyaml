@@ -12,7 +12,7 @@ type parseInlineMap struct {
 	*parser.Parser
 }
 
-func ParseInlineMap(in string) (*InlineMap, error) {
+func ParseInlineMapFromString(in string) (*InlineMap, error) {
 	p := &parseInlineMap{
 		Parser: parser.New(in),
 	}

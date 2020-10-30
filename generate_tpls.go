@@ -42,7 +42,7 @@ type parse{{ .Name }} struct {
 	*parser.Parser
 }
 
-func Parse{{ .Name }}(in string) (*{{ .Name }}, error) {
+func Parse{{ .Name }}FromString(in string) (*{{ .Name }}, error) {
 	p := &parse{{ .Name }}{
 		Parser: parser.New(in),
 	}

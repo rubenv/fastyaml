@@ -32,7 +32,7 @@ func TestParseInlineMap(t *testing.T) {
 
 	assert := assert.New(t)
 
-	result, err := ParseInlineMap(inInlineMap)
+	result, err := ParseInlineMapFromString(inInlineMap)
 	assert.NoError(err)
 	assert.NotNil(result)
 

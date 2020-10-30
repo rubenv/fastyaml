@@ -12,7 +12,7 @@ type parseBasic struct {
 	*parser.Parser
 }
 
-func ParseBasic(in string) (*Basic, error) {
+func ParseBasicFromString(in string) (*Basic, error) {
 	p := &parseBasic{
 		Parser: parser.New(in),
 	}
